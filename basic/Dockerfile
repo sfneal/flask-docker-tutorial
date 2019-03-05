@@ -3,10 +3,10 @@ FROM ubuntu:latest
 LABEL maintainer="Stephen Neal <stephen@stephenneal.net>"
 
 # Updating operating system
-RUN apt-get update -y && apt-get install -y
+RUN apt-get update -y
 
 # Installing Python 3.5
-RUN python3-pip python3-dev python3
+RUN apt-get install -y python3-pip python3-dev python3
 
 # We copy just the requirements.txt first to leverage Docker cache
 COPY ./requirements.txt /app/requirements.txt
