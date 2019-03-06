@@ -11,7 +11,7 @@ from flask_httpauth import HTTPBasicAuth
 from werkzeug.utils import secure_filename
 
 
-UPLOAD_FOLDER = os.path.join(os.path.dirname(__file__), 'uploads')
+UPLOAD_FOLDER = '/app/uploads'
 ALLOWED_EXTENSIONS = {'txt', 'pdf', 'png', 'jpg', 'jpeg', 'gif'}
 
 app = Flask(__name__)
@@ -147,9 +147,17 @@ def upload_file():
         # File has been added and validated
         if file and allowed_file(file.filename):
             filename = secure_filename(file.filename)
+
+            # Make uploads directory if it does not exist
+            if not os.path.exists(app.config['UPLOAD_FOLDER']):
+                os.mkdir(app.config['UPLOAD_FOLDER'])
             file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
-            return send_from_directory(app.config['UPLOAD_FOLDER'],
-                                       filename)
+            try:
+                return send_from_directory(app.config['UPLOAD_FOLDER'], filename)
+            except FileNotFoundError:
+                response = [os.path.exists(os.path.join(app.config['UPLOAD_FOLDER'], filename)),
+                            os.path.join(app.config['UPLOAD_FOLDER'], filename)]
+                return response
     return '''
     <!doctype html>
     <title>Upload new File</title>
@@ -171,4 +179,4 @@ if __name__ == '__main__':
     # cd basic
     # docker build -t tasks .
     # docker run -i -t -p 5001:5001 tasks:latest
-    app.run(host='0.0.0.0', port=5001, debug=True)
+    app.run(host='0.0.0.0', port=5000, debug=True)

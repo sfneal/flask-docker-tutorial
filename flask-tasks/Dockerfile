@@ -12,7 +12,7 @@ WORKDIR ./app
 
 RUN pip3 install -r requirements.txt
 
-EXPOSE 5001
+EXPOSE 5000
 
 COPY ./nginx.conf /etc/nginx/sites-enabled/default
 
