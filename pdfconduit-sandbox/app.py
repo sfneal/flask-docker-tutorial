@@ -1,7 +1,8 @@
 import os
-from flask import Flask, request, flash, redirect, send_from_directory
+from flask import Flask, request, flash, redirect, send_from_directory, url_for
 from werkzeug.utils import secure_filename
 from pdfconduit import Watermark
+from dirutility import DirPaths
 
 
 def apply_watermark(file_path, params):
@@ -67,6 +68,31 @@ def upload_file():
       <input type=submit value=Upload>
     </form>
     '''
+
+
+@app.route('/uploads/<filename>')
+def uploaded_file(filename):
+    return send_from_directory(app.config['UPLOAD_FOLDER'],
+                               filename)
+
+
+@app.route('/uploads', methods=['GET'])
+def all_uploads():
+    response = '<ul>'
+    uploads = DirPaths('/app/uploads', full_paths=False).walk()
+    for upload in uploads:
+        response += '''
+        <li>
+            <a href="/uploads/{0}">{0}</a>
+        </li>
+        '''.format(upload)
+    response += '</ul>'
+    return response
+
+
+@app.route('/test', methods=['GET'])
+def test():
+    return 'pdfconduit-sandbox docker container is running!'
 
 
 if __name__ == '__main__':
