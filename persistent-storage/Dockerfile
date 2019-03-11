@@ -6,12 +6,21 @@ LABEL maintainer="Stephen Neal <stephen@stephenneal.net>"
 RUN apt-get update
 
 # Install Python and nginx
-RUN apt-get install -y python3 python3-dev python3-pip nginx && pip3 install --upgrade pip
+RUN apt-get install -y python3 python3-dev python3-pip nginx
+RUN pip3 install --upgrade pip
 RUN pip3 install uwsgi
 
 # Install Python package dependencies
 COPY ./requirements.txt /app/requirements.txt
 RUN pip3 install -r /app/requirements.txt
+
+# Mount volumne
+RUN mkdir -p /efs
+RUN chown -R root:root /efs
+VOLUME /efs
+
+# Set working directory
+WORKDIR /app
 
 # Expose port 5000
 EXPOSE 5000
