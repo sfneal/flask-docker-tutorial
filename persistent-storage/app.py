@@ -29,8 +29,9 @@ def allowed_file(filename):
 
 @app.route('/', methods=['GET', 'POST'])
 def home():
+    file = request.files['file']
     if request.method == 'POST':
-        return upload_file()
+        return upload_file(file)
     return '''
     <!doctype html>
     <title>Upload new File</title>
@@ -44,20 +45,24 @@ def home():
 
 @app.route('/api', methods=['POST'])
 def api():
-    if request.method == 'POST':
-        upload_file()
-
     file = request.files['file']
+    if request.method == 'POST':
+        upload_file(file)
+
     if file and allowed_file(file.filename):
         return jsonify({'file': secure_filename(file.filename)}), 201
 
 
-def upload_file():
+@app.route('/apitest', methods=['GET'])
+def api_test():
+    return jsonify({'response': 'Returned a response'})
+
+
+def upload_file(file):
     # Check if the post request has the file part
     if 'file' not in request.files:
         flash('No file part')
         return redirect(request.url)
-    file = request.files['file']
     params = {
         'address': '43 Indian Lane',
         'town': 'Franklin',
