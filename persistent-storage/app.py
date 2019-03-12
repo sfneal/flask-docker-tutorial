@@ -106,7 +106,10 @@ def test2():
 
 @app.route('/mnt', methods=['GET'])
 def efs():
-    return '{0} {1}'.format(os.path.exists(UPLOAD_FOLDER), UPLOAD_FOLDER)
+    if os.path.exists(UPLOAD_FOLDER):
+        return '{0} {1}'.format('Mounted drive exists!', UPLOAD_FOLDER)
+    else:
+        return '{0} {1}'.format('Error! Can not find mounted drive.', UPLOAD_FOLDER)
 
 
 if __name__ == '__main__':
