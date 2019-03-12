@@ -96,7 +96,7 @@ def all_uploads():
 
 @app.route('/test', methods=['GET'])
 def test():
-    return 'persistent-storage docker container is running!'
+    return 'ECS instance is running a ANOTHER UPDATED docker container!'
 
 
 @app.route('/test2', methods=['GET'])
